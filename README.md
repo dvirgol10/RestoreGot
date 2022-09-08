@@ -8,3 +8,18 @@ to resolve the "real" function's address).
 
 Note: We do the above-mentioned for all of the PLT stubs except the first because the first PLT stub contains the code which calls `_dl_runtime_resolve` to resolve
 the symbols in the PLT. 
+
+## Demonstration
+
+Executing the code of [example.c](Demonstration/example.c) prints the following line:
+`Now 'printf' & 'getchar' addresses are resolved. Press ENTER key after running 'restore_got'...`. 
+If we attach `gdb` to the running program we can see that the addresses of the symbols in the PLT 
+are already resolved (because all of them were called until this point of the execution):\
+![img](Demonstration/got_before_restoring.jpg)\
+and indeed if we look at the disassembly of the function in `0xf7d65a70` we see the code of
+`printf`:\
+![img](Demonstration/printf_disassembly.jpg)\
+then we can run the code of [restore_got.c](restore_got.c), and attaching again with `gdb` to view the GOT entries results in\
+![img](Demonstration/got_after_restoring.jpg)\
+which are the original values. Indeed, pressing the ENTER key in the execution of [example.c](Demonstration/example.c) prints the following output:
+`Now they are resolved again. Press ENTER key to exit...`. So `printf` was resolved again correctly.
